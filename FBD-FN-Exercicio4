@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Normalização Completa - Turma, Matrícula e Notas</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/white.min.css" rel="stylesheet">
+    <style>
+        .reveal pre {
+            font-size: 0.6em;
+            line-height: 1.2;
+        }
+        .reveal table {
+            font-size: 0.7em;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>Normalização Completa</h1>
+                <h3>Turma, Matrícula e Notas</h3>
+            </section>
+
+            <section>
+                <h2>Relações Originais</h2>
+                <pre><code>
+Turma(numeroTurma, semestre, codDisciplina, 
+       nomeDisciplina, horário, codProf, nomeProf)
+
+Matricula(codAluno, numeroTurma, nomeAluno, telAluno)
+
+Notas(numeroTurma, semestre, codAluno, 
+       nota1, nota2, media)
+                </code></pre>
+                <p>Problemas identificados:</p>
+                <ul>
+                    <li>Redundância de dados</li>
+                    <li>Dependências não resolvidas</li>
+                    <li>Possíveis anomalias de inserção, atualização e exclusão</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>1ª Forma Normal (1FN)</h2>
+                <pre><code>
+Turma(
+    numeroTurma, 
+    semestre, 
+    codDisciplina, 
+    nomeDisciplina, 
+    horário, 
+    codProf, 
+    nomeProf
+)
+
+Aluno(
+    codAluno,
+    nomeAluno,
+    telAluno
+)
+
+Matricula(
+    codAluno, 
+    numeroTurma
+)
+
+Notas(
+    numeroTurma, 
+    semestre, 
+    codAluno, 
+    nota1, 
+    nota2, 
+    media
+)
+                </code></pre>
+                <p>Ações na 1FN:</p>
+                <ul>
+                    <li>Criar tabela Aluno separada</li>
+                    <li>Simplificar Matrícula</li>
+                    <li>Manter dados atômicos</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>2ª Forma Normal (2FN)</h2>
+                <pre><code>
+Turma(
+    numeroTurma, 
+    semestre, 
+    codDisciplina
+)
+
+Disciplina(
+    codDisciplina, 
+    nomeDisciplina
+)
+
+Professor(
+    codProf, 
+    nomeProf
+)
+
+Aluno(
+    codAluno,
+    nomeAluno,
+    telAluno
+)
+
+Matricula(
+    codAluno, 
+    numeroTurma
+)
+
+Notas(
+    numeroTurma, 
+    codAluno, 
+    nota1, 
+    nota2, 
+    media
+)
+                </code></pre>
+                <p>Ações na 2FN:</p>
+                <ul>
+                    <li>Eliminar dependências parciais</li>
+                    <li>Separar Disciplina e Professor</li>
+                    <li>Remover semestre de Notas</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3ª Forma Normal (3FN)</h2>
+                <pre><code>
+Turma(
+    numeroTurma, 
+    semestre, 
+    codDisciplina,
+    horário
+)
+
+Disciplina(
+    codDisciplina, 
+    nomeDisciplina
+)
+
+Professor(
+    codProf, 
+    nomeProf
+)
+
+Aluno(
+    codAluno,
+    nomeAluno,
+    telAluno
+)
+
+Matricula(
+    codAluno, 
+    numeroTurma
+)
+
+Notas(
+    numeroTurma, 
+    codAluno, 
+    nota1, 
+    nota2, 
+    media
+)
+
+CalculoMedia(
+    nota1,
+    nota2,
+    media
+)
+                </code></pre>
+                <p>Ações na 3FN:</p>
+                <ul>
+                    <li>Remover dependências transitivas</li>
+                    <li>Separar cálculo de média</li>
+                    <li>Manter apenas dependências diretas</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Benefícios da Normalização</h2>
+                <ul>
+                    <li>Redução de redundância</li>
+                    <li>Integridade dos dados</li>
+                    <li>Facilidade de manutenção</li>
+                    <li>Menor consumo de espaço</li>
+                    <li>Consultas mais eficientes</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+    <script>
+        Reveal.initialize({
+            width: 960,
+            height: 700,
+            margin: 0.1,
+            minScale: 0.2,
+            maxScale: 1.5
+        });
+    </script>
+</body>
+</html>
