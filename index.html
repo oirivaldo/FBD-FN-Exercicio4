@@ -1,209 +1,112 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Normalização Completa - Turma, Matrícula e Notas</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/white.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Normalização de Banco de Dados - Exercício 4</title>
     <style>
-        .reveal pre {
-            font-size: 0.6em;
-            line-height: 1.2;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
         }
-        .reveal table {
-            font-size: 0.7em;
+        .container {
+            width: 80%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .code {
+            background: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        .menu {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .menu a {
+            margin: 10px;
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .menu a:hover {
+            background: #0056b3;
         }
     </style>
 </head>
 <body>
-    <div class="reveal">
-        <div class="slides">
-            <section>
-                <h1>Normalização Completa</h1>
-                <h3>Turma, Matrícula e Notas</h3>
-            </section>
+    <div class="container">
+        <h1>Normalização de Banco de Dados</h1>
+        <div class="menu">
+            <a href="#unf">Forma Não Normalizada</a>
+            <a href="#fn1">Primeira Forma Normal (1FN)</a>
+            <a href="#fn2">Segunda Forma Normal (2FN)</a>
+            <a href="#fn3">Terceira Forma Normal (3FN)</a>
+        </div>
 
-            <section>
-                <h2>Relações Originais</h2>
-                <pre><code>
-Turma(numeroTurma, semestre, codDisciplina, 
-       nomeDisciplina, horário, codProf, nomeProf)
+        <div id="unf" class="section">
+            <h2>Forma Não Normalizada (UNF)</h2>
+            <p>Os dados são inicialmente organizados em três tabelas com possíveis redundâncias e atributos multivalorados.</p>
+            <div class="code">
+                Turma(numeroTurma, semestre, codDisciplina, nomeDisciplina, horário, codProf, nomeProf)<br>
+                Matricula(codAluno, numeroTurma, nomeAluno, (telAluno))<br>
+                Notas(numeroTurma, semestre, codAluno, nota1, nota2, media)
+            </div>
+        </div>
 
-Matricula(codAluno, numeroTurma, nomeAluno, telAluno)
+        <div id="fn1" class="section">
+            <h2>Primeira Forma Normal (1FN)</h2>
+            <p>Eliminamos atributos multivalorados, criando uma nova tabela para armazenar os telefones dos alunos.</p>
+            <div class="code">
+                Turma(numeroTurma, semestre, codDisciplina, nomeDisciplina, horário, codProf, nomeProf)<br>
+                Aluno(codAluno, nomeAluno)<br>
+                TelefoneAluno(codAluno, telAluno)<br>
+                Matricula(codAluno, numeroTurma)<br>
+                Notas(numeroTurma, semestre, codAluno, nota1, nota2, media)
+            </div>
+        </div>
 
-Notas(numeroTurma, semestre, codAluno, 
-       nota1, nota2, media)
-                </code></pre>
-                <p>Problemas identificados:</p>
-                <ul>
-                    <li>Redundância de dados</li>
-                    <li>Dependências não resolvidas</li>
-                    <li>Possíveis anomalias de inserção, atualização e exclusão</li>
-                </ul>
-            </section>
+        <div id="fn2" class="section">
+            <h2>Segunda Forma Normal (2FN)</h2>
+            <p>Removemos dependências parciais, separando Disciplina e Professor em tabelas próprias.</p>
+            <div class="code">
+                Disciplina(codDisciplina, nomeDisciplina)<br>
+                Professor(codProf, nomeProf)<br>
+                Turma(numeroTurma, semestre, codDisciplina, horário, codProf)<br>
+                Aluno(codAluno, nomeAluno)<br>
+                TelefoneAluno(codAluno, telAluno)<br>
+                Matricula(codAluno, numeroTurma)<br>
+                Notas(numeroTurma, codAluno, nota1, nota2, media)
+            </div>
+        </div>
 
-            <section>
-                <h2>1ª Forma Normal (1FN)</h2>
-                <pre><code>
-Turma(
-    numeroTurma, 
-    semestre, 
-    codDisciplina, 
-    nomeDisciplina, 
-    horário, 
-    codProf, 
-    nomeProf
-)
-
-Aluno(
-    codAluno,
-    nomeAluno,
-    telAluno
-)
-
-Matricula(
-    codAluno, 
-    numeroTurma
-)
-
-Notas(
-    numeroTurma, 
-    semestre, 
-    codAluno, 
-    nota1, 
-    nota2, 
-    media
-)
-                </code></pre>
-                <p>Ações na 1FN:</p>
-                <ul>
-                    <li>Criar tabela Aluno separada</li>
-                    <li>Simplificar Matrícula</li>
-                    <li>Manter dados atômicos</li>
-                </ul>
-            </section>
-
-            <section>
-                <h2>2ª Forma Normal (2FN)</h2>
-                <pre><code>
-Turma(
-    numeroTurma, 
-    semestre, 
-    codDisciplina
-)
-
-Disciplina(
-    codDisciplina, 
-    nomeDisciplina
-)
-
-Professor(
-    codProf, 
-    nomeProf
-)
-
-Aluno(
-    codAluno,
-    nomeAluno,
-    telAluno
-)
-
-Matricula(
-    codAluno, 
-    numeroTurma
-)
-
-Notas(
-    numeroTurma, 
-    codAluno, 
-    nota1, 
-    nota2, 
-    media
-)
-                </code></pre>
-                <p>Ações na 2FN:</p>
-                <ul>
-                    <li>Eliminar dependências parciais</li>
-                    <li>Separar Disciplina e Professor</li>
-                    <li>Remover semestre de Notas</li>
-                </ul>
-            </section>
-
-            <section>
-                <h2>3ª Forma Normal (3FN)</h2>
-                <pre><code>
-Turma(
-    numeroTurma, 
-    semestre, 
-    codDisciplina,
-    horário
-)
-
-Disciplina(
-    codDisciplina, 
-    nomeDisciplina
-)
-
-Professor(
-    codProf, 
-    nomeProf
-)
-
-Aluno(
-    codAluno,
-    nomeAluno,
-    telAluno
-)
-
-Matricula(
-    codAluno, 
-    numeroTurma
-)
-
-Notas(
-    numeroTurma, 
-    codAluno, 
-    nota1, 
-    nota2, 
-    media
-)
-
-CalculoMedia(
-    nota1,
-    nota2,
-    media
-)
-                </code></pre>
-                <p>Ações na 3FN:</p>
-                <ul>
-                    <li>Remover dependências transitivas</li>
-                    <li>Separar cálculo de média</li>
-                    <li>Manter apenas dependências diretas</li>
-                </ul>
-            </section>
-
-            <section>
-                <h2>Benefícios da Normalização</h2>
-                <ul>
-                    <li>Redução de redundância</li>
-                    <li>Integridade dos dados</li>
-                    <li>Facilidade de manutenção</li>
-                    <li>Menor consumo de espaço</li>
-                    <li>Consultas mais eficientes</li>
-                </ul>
-            </section>
+        <div id="fn3" class="section">
+            <h2>Terceira Forma Normal (3FN)</h2>
+            <p>Eliminamos dependências transitivas, removendo o atributo derivado 'media'.</p>
+            <div class="code">
+                Disciplina(codDisciplina, nomeDisciplina)<br>
+                Professor(codProf, nomeProf)<br>
+                Turma(numeroTurma, semestre, codDisciplina, horário, codProf)<br>
+                Aluno(codAluno, nomeAluno)<br>
+                TelefoneAluno(codAluno, telAluno)<br>
+                Matricula(codAluno, numeroTurma)<br>
+                Notas(numeroTurma, codAluno, nota1, nota2)
+            </div>
         </div>
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
-    <script>
-        Reveal.initialize({
-            width: 960,
-            height: 700,
-            margin: 0.1,
-            minScale: 0.2,
-            maxScale: 1.5
-        });
-    </script>
 </body>
 </html>
